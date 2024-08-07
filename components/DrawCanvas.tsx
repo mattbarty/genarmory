@@ -1,8 +1,9 @@
+// components/DrawCanvas.tsx
 "use client";
 
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react';
 
-const DrawCanvas: React.FC = () => {
+const DrawCanvas = forwardRef((_, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
@@ -21,8 +22,8 @@ const DrawCanvas: React.FC = () => {
       const ctx = canvas.getContext('2d');
       if (ctx) {
         ctx.lineCap = 'round';
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 5;
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 20;
         setContext(ctx);
       }
 
@@ -60,6 +61,13 @@ const DrawCanvas: React.FC = () => {
     setIsDrawing(false);
   };
 
+  useImperativeHandle(ref, () => ({
+    getCanvasDataURL: () => {
+      const canvas = canvasRef.current;
+      return canvas ? canvas.toDataURL('image/png') : '';
+    },
+  }));
+
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
       <canvas
@@ -72,6 +80,6 @@ const DrawCanvas: React.FC = () => {
       />
     </div>
   );
-};
+});
 
 export default DrawCanvas;
