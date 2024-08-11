@@ -1,13 +1,16 @@
-// components/DrawCanvas.tsx
-"use client";
+"use client ";
 
-import React, { useRef, useEffect, useState, forwardRef, useImperativeHandle } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
 
-const DrawCanvas = forwardRef((_, ref) => {
+interface DrawCanvasProps {
+  penColour?: string;
+  lineWidth?: number;
+}
+
+const DrawCanvas = forwardRef(({ penColour = 'black', lineWidth = 10 }: DrawCanvasProps, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
-  const [penColour, setPenColour] = useState('black');
 
   const resizeCanvas = () => {
     const canvas = canvasRef.current;
@@ -44,12 +47,18 @@ const DrawCanvas = forwardRef((_, ref) => {
     const { offsetX, offsetY } = nativeEvent;
     if (context) {
       context.strokeStyle = penColour;
-      context.lineWidth = 10;
+      context.lineWidth = lineWidth;
       context.lineJoin = 'round';
       context.lineCap = 'round';
       context.beginPath();
       context.moveTo(offsetX, offsetY);
       setIsDrawing(true);
+    }
+  };
+
+  const clearCanvas = () => {
+    if (context && canvasRef.current) {
+      context.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
     }
   };
 
@@ -73,30 +82,18 @@ const DrawCanvas = forwardRef((_, ref) => {
       const canvas = canvasRef.current;
       return canvas ? canvas.toDataURL('image/png') : '';
     },
+    clearCanvas, // Expose the clearCanvas function
   }));
 
   return (
-    <>
-      <div className='flex flex-col aspect-square'>
-        <canvas
-          ref={canvasRef}
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={stopDrawing}
-          onMouseLeave={stopDrawing}
-          style={{ border: '1px solid black', cursor: 'crosshair', aspectRatio: '1 / 1' }}
-        />
-      </div>
-      <div className='flex space-x-2 p-2'>
-        <div
-          className='aspect-square w-8 bg-white border'
-          onClick={() => setPenColour('white')}></div>
-        <div
-          className='aspect-square w-8 bg-black border'
-          onClick={() => setPenColour('black')}
-        ></div>
-      </div>
-    </>
+    <canvas
+      ref={canvasRef}
+      onMouseDown={startDrawing}
+      onMouseMove={draw}
+      onMouseUp={stopDrawing}
+      onMouseLeave={stopDrawing}
+      className='cursor-crosshair aspect-square'
+    />
   );
 });
 

@@ -8,7 +8,11 @@ export default function GenerateImageForm() {
   const [prompt, setPrompt] = useState('');
   const [output, setOutput] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const canvasRef = useRef<{ getCanvasDataURL: () => string; }>(null);
+  const [selectedColor, setSelectedColor] = useState('black');
+  const [lineWidth, setLineWidth] = useState(10);
+  const canvasRef = useRef<{
+    clearCanvas(): unknown; getCanvasDataURL: () => string;
+  }>(null);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0] || null;
@@ -61,23 +65,46 @@ export default function GenerateImageForm() {
     }
   };
 
+  const handleResetCanvas = () => {
+    if (canvasRef.current) {
+      canvasRef.current.clearCanvas();
+    }
+  };
+
   return (
     <div className="container">
-      <div className=' max-w-sm'>
-        <DrawCanvas ref={canvasRef} />
-      </div>
-      <h1>Generate Image</h1>
       <div>
+        <button
+          onClick={handleResetCanvas}
+          className='mt-2 px-2 py-1 bg-red-500 rounded-sm text-white'
+        >
+          Reset Canvas
+        </button>
+        <div className='max-w-sm aspect-square border'>
+          <DrawCanvas ref={canvasRef} penColour={selectedColor} lineWidth={lineWidth} />
+        </div>
+        <div className='flex'>
+          <div className='aspect-square bg-white w-8 border m-2'
+            onClick={() => setSelectedColor('white')}></div>
+          <div className='aspect-square bg-black w-8 border m-2'
+            onClick={() => setSelectedColor('black')}></div>
+        </div>
+        <div className="mt-4">
+          <label htmlFor="brushSize">Brush Size:</label>
+          <input
+            type="range"
+            id="brushSize"
+            min="1"
+            max="50"
+            value={lineWidth}
+            onChange={(e) => setLineWidth(Number(e.target.value))}
+            className="ml-2"
+          />
+        </div>
+
+      </div>
+      <div className='mt-16'>
         <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="file">Choose Image:</label>
-            <input
-              type="file"
-              id="file"
-              accept="image/*"
-              onChange={handleFileChange}
-            />
-          </div>
           <div>
             <label htmlFor="prompt">Prompt:</label>
             <input
@@ -86,9 +113,10 @@ export default function GenerateImageForm() {
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
               required
+              className='border'
             />
           </div>
-          <button type="submit" disabled={loading}>
+          <button type="submit" disabled={loading} className='px-2 py-1 bg-blue-500 rounded-sm text-white'>
             {loading ? 'Generating...' : 'Generate'}
           </button>
         </form>
