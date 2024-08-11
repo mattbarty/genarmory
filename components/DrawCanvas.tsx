@@ -45,6 +45,8 @@ const DrawCanvas = forwardRef((_, ref) => {
     if (context) {
       context.strokeStyle = penColour;
       context.lineWidth = 10;
+      context.lineJoin = 'round';
+      context.lineCap = 'round';
       context.beginPath();
       context.moveTo(offsetX, offsetY);
       setIsDrawing(true);
