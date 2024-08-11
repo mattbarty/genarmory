@@ -63,34 +63,36 @@ export default function GenerateImageForm() {
 
   return (
     <div className="container">
-      <div className='aspect-square w-64'>
+      <div className=' max-w-sm'>
         <DrawCanvas ref={canvasRef} />
       </div>
       <h1>Generate Image</h1>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="file">Choose Image:</label>
-          <input
-            type="file"
-            id="file"
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-        </div>
-        <div>
-          <label htmlFor="prompt">Prompt:</label>
-          <input
-            type="text"
-            id="prompt"
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            required
-          />
-        </div>
-        <button type="submit" disabled={loading}>
-          {loading ? 'Generating...' : 'Generate'}
-        </button>
-      </form>
+      <div>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label htmlFor="file">Choose Image:</label>
+            <input
+              type="file"
+              id="file"
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+          </div>
+          <div>
+            <label htmlFor="prompt">Prompt:</label>
+            <input
+              type="text"
+              id="prompt"
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              required
+            />
+          </div>
+          <button type="submit" disabled={loading}>
+            {loading ? 'Generating...' : 'Generate'}
+          </button>
+        </form>
+      </div>
       {output && (
         <div>
           <h2>Generated Image</h2>
