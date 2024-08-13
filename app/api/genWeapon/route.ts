@@ -12,7 +12,7 @@ export const POST = async (req: NextRequest) => {
 	const input = {
 		image: image,
 		prompt: prompt,
-		guidance: 9,
+		guidance: 8,
 		a_prompt: 'world of warcraft concept art, fantasy',
 		n_prompt: 'people, characters, creatures',
 	};

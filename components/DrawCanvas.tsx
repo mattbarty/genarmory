@@ -7,7 +7,7 @@ interface DrawCanvasProps {
   lineWidth?: number;
 }
 
-const DrawCanvas = forwardRef(({ penColour = 'black', lineWidth = 10 }: DrawCanvasProps, ref) => {
+const DrawCanvas = forwardRef(({ penColour = 'black', lineWidth = 6 }: DrawCanvasProps, ref) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [context, setContext] = useState<CanvasRenderingContext2D | null>(null);
